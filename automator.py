@@ -49,8 +49,10 @@ class Automator:
                 print("[%s] Train come."%time.asctime())
                 self.harvest(self.harvest_filter, good_id)
             else:
-                print("[%s] No Train."%time.asctime())
-                findSomething = True
+                print("[%s] No Goods! Wait 2s."%time.asctime())
+                self.swipe()
+                time.sleep(2)
+                continue
             
             # 再看看是不是有货没收，如果有就重启app
             good_id = self._has_good()
@@ -60,6 +62,8 @@ class Automator:
                 time.sleep(2)
                 # 重新启动app
                 self.d.app_start("com.tencent.jgm")
+                # 冗余等待游戏启动完毕
+                time.sleep(15)
                 continue
 
             # 简单粗暴的方式，处理 “XX之光” 的荣誉显示。
@@ -153,11 +157,11 @@ class Automator:
                     short_wait()
                     self.d.click(0.511, 0.614) # 确认升级
                     print("[%s] Policy upgraded.    ++++++"%time.asctime())
-                    self._back_to_main()
-
-                    return
+                    break
                 # 如果还没出现绿色箭头，往下划
-                self.d.swipe(0.482, 0.809, 0.491, 0.516,duration = 0.3)
+                else:
+                    self.d.swipe(0.482, 0.809, 0.491, 0.516,duration = 0.3)
+                    time.sleep(3) # 停顿，等待屏幕划动结束
             self._back_to_main()
 
     def check_task(self):
